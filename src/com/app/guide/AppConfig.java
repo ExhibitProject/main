@@ -3,7 +3,7 @@ package com.app.guide;
 import android.content.Context;
 
 /**
- * 应用程序设置类 以一个单例模式创建
+ * 应用程序设置类 以一个单例模式创建c
  */
 
 public class AppConfig {
