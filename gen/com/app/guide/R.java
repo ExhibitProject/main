@@ -814,10 +814,12 @@ containing a value of this type.
         public static final int buy_radio_color=0x7f07000f;
         public static final int darkgray=0x7f07000a;
         public static final int lightgray=0x7f070009;
+        public static final int menu_btn_bg=0x7f070010;
+        public static final int menu_btn_text=0x7f070011;
         public static final int myblack=0x7f070007;
         public static final int myred=0x7f070006;
         public static final int mywhite=0x7f070008;
-        public static final int tab_main_text=0x7f070010;
+        public static final int tab_main_text=0x7f070012;
     }
     public static final class dimen {
         /**  Default height of an action bar. 
@@ -1043,7 +1045,10 @@ containing a value of this type.
         public static final int actionbar_bg=0x7f020070;
         public static final int btn_locatecity_bg=0x7f020071;
         public static final int ic_launcher=0x7f020072;
-        public static final int shadow=0x7f020073;
+        public static final int icon_marka=0x7f020073;
+        public static final int menu_btn_bg=0x7f020074;
+        public static final int shadow=0x7f020075;
+        public static final int test=0x7f020076;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f0a0026;
@@ -1085,7 +1090,7 @@ containing a value of this type.
         public static final int abs__textButton=0x7f0a0019;
         public static final int abs__title=0x7f0a0021;
         public static final int abs__up=0x7f0a0001;
-        public static final int action_settings=0x7f0a0047;
+        public static final int action_settings=0x7f0a0053;
         public static final int city_btn_loacte=0x7f0a0038;
         public static final int city_dialog=0x7f0a003a;
         public static final int city_list=0x7f0a0039;
@@ -1095,16 +1100,28 @@ containing a value of this type.
         public static final int fullscreen=0x7f0a0013;
         public static final int homeAsUp=0x7f0a000c;
         public static final int home_realtabcontent=0x7f0a003c;
-        public static final int home_tab_course=0x7f0a003f;
+        public static final int home_tab_follow=0x7f0a003f;
         public static final int home_tab_group=0x7f0a003d;
-        public static final int home_tab_main=0x7f0a003e;
-        public static final int home_tab_my=0x7f0a0040;
-        public static final int home_tab_set=0x7f0a0041;
-        public static final int item_city_alpha=0x7f0a0043;
-        public static final int item_city_name=0x7f0a0044;
+        public static final int home_tab_home=0x7f0a003e;
+        public static final int home_tab_map=0x7f0a0041;
+        public static final int home_tab_theme=0x7f0a0040;
+        public static final int item_city_alpha=0x7f0a004f;
+        public static final int item_city_name=0x7f0a0050;
         public static final int left=0x7f0a0011;
         public static final int listMode=0x7f0a0008;
+        public static final int map_btn_friend=0x7f0a0044;
+        public static final int map_btn_location=0x7f0a0043;
+        public static final int map_group_floor=0x7f0a0046;
+        public static final int map_radio_one=0x7f0a0047;
+        public static final int map_radio_three=0x7f0a0049;
+        public static final int map_radio_two=0x7f0a0048;
+        public static final int map_sceneMap=0x7f0a0042;
+        public static final int map_tog_list=0x7f0a0045;
         public static final int margin=0x7f0a0014;
+        public static final int menu_btn_back=0x7f0a004d;
+        public static final int menu_btn_city=0x7f0a004a;
+        public static final int menu_btn_download=0x7f0a004b;
+        public static final int menu_btn_setting=0x7f0a004c;
         public static final int none=0x7f0a0015;
         public static final int normal=0x7f0a0009;
         public static final int right=0x7f0a0012;
@@ -1112,10 +1129,10 @@ containing a value of this type.
         public static final int showCustom=0x7f0a000d;
         public static final int showHome=0x7f0a000e;
         public static final int showTitle=0x7f0a000f;
-        public static final int sliding_container=0x7f0a0045;
-        public static final int slidingmenumain=0x7f0a0046;
+        public static final int sliding_container=0x7f0a0051;
+        public static final int slidingmenumain=0x7f0a0052;
         public static final int tabMode=0x7f0a000a;
-        public static final int textView1=0x7f0a0042;
+        public static final int textView1=0x7f0a004e;
         public static final int useLogo=0x7f0a0010;
         public static final int wrap_content=0x7f0a0007;
     }
@@ -1147,12 +1164,14 @@ containing a value of this type.
         public static final int activity_city=0x7f030015;
         public static final int activity_home=0x7f030016;
         public static final int activity_main=0x7f030017;
-        public static final int frag_test=0x7f030018;
-        public static final int item_city=0x7f030019;
-        public static final int sherlock_spinner_dropdown_item=0x7f03001a;
-        public static final int sherlock_spinner_item=0x7f03001b;
-        public static final int sliding_menu_left=0x7f03001c;
-        public static final int slidingmenumain=0x7f03001d;
+        public static final int frag_map=0x7f030018;
+        public static final int frag_sliding_menu=0x7f030019;
+        public static final int frag_test=0x7f03001a;
+        public static final int item_city=0x7f03001b;
+        public static final int sherlock_spinner_dropdown_item=0x7f03001c;
+        public static final int sherlock_spinner_item=0x7f03001d;
+        public static final int sliding_menu_left=0x7f03001e;
+        public static final int slidingmenumain=0x7f03001f;
     }
     public static final class menu {
         public static final int city=0x7f0d0000;
@@ -1207,6 +1226,10 @@ containing a value of this type.
         public static final int app_name=0x7f0b000d;
         public static final int city_location=0x7f0b0011;
         public static final int hello_world=0x7f0b000f;
+        public static final int menu_back=0x7f0b001a;
+        public static final int menu_city=0x7f0b0017;
+        public static final int menu_download=0x7f0b0018;
+        public static final int menu_setting=0x7f0b0019;
         public static final int tab_main_four=0x7f0b0016;
         public static final int tab_main_one=0x7f0b0013;
         public static final int tab_main_three=0x7f0b0015;
@@ -1333,6 +1356,7 @@ containing a value of this type.
         public static final int Widget_Sherlock_Spinner_DropDown_ActionBar=0x7f0c0024;
         public static final int Widget_Sherlock_TextView_SpinnerItem=0x7f0c0032;
         public static final int style_main_tab=0x7f0c005d;
+        public static final int style_menu=0x7f0c005e;
         public static final int text_ac_title=0x7f0c005c;
         public static final int text_large_black=0x7f0c005b;
     }

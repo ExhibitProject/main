@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.app.guide.AppManager;
 import com.app.guide.R;
 import com.app.guide.adapter.FragmentTabAdapter;
+import com.app.guide.adapter.FragmentTabAdapter.OnRgsExtraCheckedChangedListener;
 import com.app.guide.ui.MenuFragment.HomeClick;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -50,14 +51,28 @@ public class HomeActivity extends BaseActivity {
 		threeBundle.putString("title", "three");
 		three.setArguments(threeBundle);
 		fragments.add(three);
-		Fragment four = new TestFragment();
+		Fragment mapFragment = new MapFragment();
 		Bundle fourBundle = new Bundle();
 		fourBundle.putString("title", "four");
-		four.setArguments(fourBundle);
-		fragments.add(four);
+		mapFragment.setArguments(fourBundle);
+		fragments.add(mapFragment);
 		mRadioGroup = (RadioGroup) findViewById(R.id.home_tab_group);
-		new FragmentTabAdapter(this, fragments, R.id.home_realtabcontent,
-				mRadioGroup);
+		FragmentTabAdapter adapter = new FragmentTabAdapter(this, fragments,
+				R.id.home_realtabcontent, mRadioGroup);
+		adapter.setOnRgsExtraCheckedChangedListener(new OnRgsExtraCheckedChangedListener() {
+
+			@Override
+			public void OnRgsExtraCheckedChanged(RadioGroup radioGroup,
+					int checkedId, int index) {
+				// TODO Auto-generated method stub
+				if (index == 3) {
+					sm.setSlidingEnabled(false);
+				} else {
+					sm.setSlidingEnabled(true);
+				}
+			}
+
+		});
 	}
 
 	@Override
@@ -83,7 +98,7 @@ public class HomeActivity extends BaseActivity {
 			}, 2000);
 		}
 	}
-	
+
 	@Override
 	protected void initSlidingMenu() {
 		// TODO Auto-generated method stub

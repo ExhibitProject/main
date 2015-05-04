@@ -11,5 +11,9 @@
     <string name="tab_main_two">随行导游</string>
     <string name="tab_main_three">专题导游</string>
     <string name="tab_main_four">地图</string>
+    <string name="menu_city">城市选择</string>
+    <string name="menu_download">下载中心</string>
+    <string name="menu_setting">设置</string>
+    <string name="menu_back">返回</string>
 
 </resources>
