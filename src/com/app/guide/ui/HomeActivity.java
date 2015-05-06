@@ -46,11 +46,11 @@ public class HomeActivity extends BaseActivity {
 		twoBundle.putString("title", "two");
 		two.setArguments(twoBundle);
 		fragments.add(two);
-		Fragment three = new TestFragment();
+		Fragment subjectFragment = new SubjectSelectFragment();
 		Bundle threeBundle = new Bundle();
 		threeBundle.putString("title", "three");
-		three.setArguments(threeBundle);
-		fragments.add(three);
+		subjectFragment.setArguments(threeBundle);
+		fragments.add(subjectFragment);
 		Fragment mapFragment = new MapFragment();
 		Bundle fourBundle = new Bundle();
 		fourBundle.putString("title", "four");
@@ -65,10 +65,18 @@ public class HomeActivity extends BaseActivity {
 			public void OnRgsExtraCheckedChanged(RadioGroup radioGroup,
 					int checkedId, int index) {
 				// TODO Auto-generated method stub
-				if (index == 3) {
+				sm.setSlidingEnabled(true);
+				switch (index) {
+				case 3:
 					sm.setSlidingEnabled(false);
-				} else {
-					sm.setSlidingEnabled(true);
+					break;
+					
+				case 2:
+					getSupportActionBar().setTitle("专题筛选");
+					break;
+				default:
+					
+					break;
 				}
 			}
 

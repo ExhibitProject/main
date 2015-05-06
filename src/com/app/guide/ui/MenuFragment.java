@@ -1,36 +1,69 @@
 package com.app.guide.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import com.app.guide.R;
+import com.app.guide.adapter.MenuAdapter;
 
 public class MenuFragment extends Fragment {
 
 	private HomeClick homeClick;
+	private View rootView;
+	private ListView lvMenu;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		View view = inflater.inflate(R.layout.frag_sliding_menu, null);
-		((Button) view.findViewById(R.id.menu_btn_back))
-				.setOnClickListener(new OnClickListener() {
+		if (rootView == null) {
+			rootView = inflater.inflate(R.layout.frag_menu, null);
 
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						if (homeClick != null) {
-							homeClick.home();
-						}
+		}
+		ViewGroup parent = (ViewGroup) rootView.getParent();
+		if (parent != null) {
+			parent.removeView(rootView);
+		}
+		return rootView;
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		initViews();
+	}
+
+	private void initViews() {
+		if (rootView == null)
+			return;
+		lvMenu = (ListView) rootView.findViewById(R.id.frag_menu_lv_menu);
+		lvMenu.setAdapter(new MenuAdapter(this.getActivity()));
+		lvMenu.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
+				// TODO Auto-generated method stub
+				switch (position) {
+				case 4:
+					if (homeClick != null) {
+						homeClick.home();
 					}
-				});
-		return view;
+					break;
+
+				default:
+					break;
+				}
+			}
+
+		});
 	}
 
 	public void setHomeClick(HomeClick homeClick) {

@@ -33,12 +33,12 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 
 	private PointF mStartPoint;
 	private volatile PointF mapCenter;// mapCenter表示地图中心在屏幕上的坐标
+
 	private long lastClickTime;// 记录上一次点击屏幕的时间，以判断双击事件
 	private Status mStatus = Status.NONE;
 
 	private float oldRate = 1;
 	private float oldDist = 1;
-	private float offsetX, offsetY;
 
 	private boolean isShu = true;
 	private boolean isShowMark = false;
@@ -72,8 +72,7 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 		holder.addCallback(this);
 		// 获取屏幕的宽和高
 		windowWidth = getResources().getDisplayMetrics().widthPixels;
-		windowHeight = getResources().getDisplayMetrics().heightPixels
-				- getStatusBarHeight();
+		windowHeight = getResources().getDisplayMetrics().heightPixels;
 		mPaint = new Paint();
 
 		mStartPoint = new PointF();
@@ -157,6 +156,29 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 		draw();
 	}
 
+	/**
+	 * @param px
+	 * @param py
+	 * @param width
+	 * @param height
+	 *            mapCenter表示地图中心在屏幕上的坐标 px，py表示想要将地图坐标移动屏幕中心
+	 *            判断px，py屏幕坐标与屏幕中心的差值，去和屏幕
+	 * 
+	 * 
+	 */
+	public void adjust(float px, float py, float width, float height) {
+		float mx = convertToScreenX(px, width);
+		float my = convertToScreenY(py, height);
+
+		float offsetX = windowWidth / 2 - mx;
+		float offsetY = windowHeight / 2 - my;
+		for (int i = 0; i < 100; i++) {
+			adjustCenter(offsetX / 100, offsetY / 100);
+		}
+
+		draw();
+	}
+
 	public void onDestory() {
 		if (mBitmap != null) {
 			mBitmap.recycle();
@@ -172,8 +194,14 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 	private void drag(MotionEvent event) {
 		PointF currentPoint = new PointF();
 		currentPoint.set(event.getX(), event.getY());
-		offsetX = currentPoint.x - mStartPoint.x;
-		offsetY = currentPoint.y - mStartPoint.y;
+		float offsetX = currentPoint.x - mStartPoint.x;
+		float offsetY = currentPoint.y - mStartPoint.y;
+		adjustCenter(offsetX, offsetY);
+		draw();
+		mStartPoint = currentPoint;
+	}
+
+	private void adjustCenter(float offsetX, float offsetY) {
 		// 以下是进行判断，防止出现图片拖拽离开屏幕
 		if (offsetX > 0
 				&& mapCenter.x + offsetX - mBitmap.getWidth() * mCurrentScale
@@ -197,8 +225,6 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		mapCenter.x += offsetX;
 		mapCenter.y += offsetY;
-		draw();
-		mStartPoint = currentPoint;
 	}
 
 	// 处理多点触控缩放事件
@@ -298,20 +324,13 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 							matrix.setScale(1.0f, 1.0f);
 							// 使用Matrix使得Bitmap的宽和高发生变化，在这里使用的mapX和mapY都是相对值
 							matrix.postTranslate(
-									mapCenter.x - location.getWidth() / 2
-											- mBitmap.getWidth()
-											* mCurrentScale / 2
-											+ mBitmap.getWidth()
-											* object.getMapX() * mCurrentScale,
-									mapCenter.y - location.getHeight()
-											- mBitmap.getHeight()
-											* mCurrentScale / 2
-											+ mBitmap.getHeight()
-											* object.getMapY() * mCurrentScale);
+									convertToScreenX(object.getMapX(),
+											location.getWidth()),
+									convertToScreenY(object.getMapY(),
+											location.getHeight()));
 							canvas.drawBitmap(location, matrix, mPaint);
 						}
 					}
-
 				}
 				if (canvas != null) {
 					getHolder().unlockCanvasAndPost(canvas);
@@ -319,7 +338,7 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 			}
 		}).start();
 	}
-	
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		// TODO Auto-generated method stub
@@ -380,30 +399,13 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
 		// TODO Auto-generated method stub
-
+		windowHeight = height;
+		windowWidth = width;
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
-	}
-
-	// 获得状态栏高度
-	private int getStatusBarHeight() {
-		Class<?> c = null;
-		Object obj = null;
-		Field field = null;
-		int x = 0;
-		try {
-			c = Class.forName("com.android.internal.R$dimen");
-			obj = c.newInstance();
-			field = c.getField("status_bar_height");
-			x = Integer.parseInt(field.get(obj).toString());
-			return getResources().getDimensionPixelSize(x);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			return 75;
-		}
 	}
 
 	public boolean isShowMark() {
@@ -413,6 +415,16 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 	public void setShowMark(boolean isShowMark) {
 		this.isShowMark = isShowMark;
 		draw();
+	}
+
+	public float convertToScreenX(float mapX, float width) {
+		return mapCenter.x - width / 2 - mBitmap.getWidth() * mCurrentScale / 2
+				+ mBitmap.getWidth() * mapX * mCurrentScale;
+	}
+
+	public float convertToScreenY(float mapY, float height) {
+		return mapCenter.y - height - mBitmap.getHeight() * mCurrentScale / 2
+				+ mBitmap.getHeight() * mapY * mCurrentScale;
 	}
 
 }

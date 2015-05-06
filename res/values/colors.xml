@@ -5,4 +5,21 @@
     <color name="mywhite">#ffff</color>
     <color name="lightgray">#eeee</color>
     <color name="darkgray">#cccc</color>
+    
+    <color name="exhibit_title_text_color">#445500</color>
+    <color name="color_black">#000000</color>
+	<color name="color_white">#ffffff</color>
+    <color name="hint_font_color">#444444</color>
+    
+    <color name="footer_tabs_bg">#0077ba</color>
+    <color name="color_list_bg">#bebebe</color>
+    
+    <color name="font_blue">#3ca0ec</color>
+    <color name="indicator">#dd191d</color>
+
+    <color name="btn_press_color">#5677fc</color>
+    <color name="btn_pressed_color">#3ca0ec</color>
+
+    <color name="list_item_pressed">#ffe0e0e0</color>
+    <color name="text_color">#ff545454</color>
 </resources>

@@ -8,6 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <ListView
+        android:id="@+id/map_list_exhibit"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:visibility="gone" >
+    </ListView>
+
     <LinearLayout
         android:layout_width="80dp"
         android:layout_height="wrap_content"
@@ -45,13 +53,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="One" />
-            
+
             <RadioButton
                 android:id="@+id/map_radio_two"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Two" />
-            
+
             <RadioButton
                 android:id="@+id/map_radio_three"
                 android:layout_width="match_parent"

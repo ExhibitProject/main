@@ -412,7 +412,7 @@ public class FileUtils
 		if (!fileName.equals("")) {
 
 			File path = Environment.getExternalStorageDirectory();
-			File newPath = new File(path.toString() + fileName);
+			File newPath = new File(path.toString() + "/" + fileName);
 			checker.checkDelete(newPath.toString());
 			if (newPath.isDirectory()) {
 				String[] listfile = newPath.list();
