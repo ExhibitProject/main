@@ -1,6 +1,5 @@
 package com.app.guide.widget;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,9 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 
 	private PointF mStartPoint;
 	private volatile PointF mapCenter;// mapCenter表示地图中心在屏幕上的坐标
-
+	
+	private float locationX,locationY;
+	
 	private long lastClickTime;// 记录上一次点击屏幕的时间，以判断双击事件
 	private Status mStatus = Status.NONE;
 
@@ -100,6 +101,11 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 			isShu = false;
 		}
 		draw();
+	}
+	
+	public void setLoactionPosition(float x, float y){
+		this.locationX = x;
+		this.locationY = y;
 	}
 
 	/**
@@ -179,10 +185,13 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 		draw();
 	}
 
-	public void onDestory() {
+	public void onPuase() {
 		if (mBitmap != null) {
 			mBitmap.recycle();
 		}
+	}
+	
+	public void onDestory(){
 		for (MarkObject object : markList) {
 			if (object.getmBitmap() != null) {
 				object.getmBitmap().recycle();
