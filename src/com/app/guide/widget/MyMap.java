@@ -1,7 +1,7 @@
 package com.app.guide.widget;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,7 +10,11 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -32,9 +36,10 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 
 	private PointF mStartPoint;
 	private volatile PointF mapCenter;// mapCenter表示地图中心在屏幕上的坐标
-	
-	private float locationX,locationY;
-	
+	private DrawThread mDrawThread;
+
+	private float locationX, locationY;
+	private float radius = 5;
 	private long lastClickTime;// 记录上一次点击屏幕的时间，以判断双击事件
 	private Status mStatus = Status.NONE;
 
@@ -48,7 +53,7 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 		NONE, ZOOM, DRAG
 	};
 
-	private List<MarkObject> markList = new ArrayList<MarkObject>();
+	private List<MarkObject> markList = new CopyOnWriteArrayList<MarkObject>();
 
 	public MyMap(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -75,9 +80,11 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 		windowWidth = getResources().getDisplayMetrics().widthPixels;
 		windowHeight = getResources().getDisplayMetrics().heightPixels;
 		mPaint = new Paint();
-
+		mPaint.setColor(Color.RED);
 		mStartPoint = new PointF();
 		mapCenter = new PointF();
+		mDrawThread = new DrawThread();
+		mDrawThread.start();
 	}
 
 	public void setBitmap(Bitmap bitmap) {
@@ -100,10 +107,11 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 		} else {
 			isShu = false;
 		}
+		markList.clear();
 		draw();
 	}
-	
-	public void setLoactionPosition(float x, float y){
+
+	public void setLoactionPosition(float x, float y) {
 		this.locationX = x;
 		this.locationY = y;
 	}
@@ -190,12 +198,11 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 			mBitmap.recycle();
 		}
 	}
-	
-	public void onDestory(){
-		for (MarkObject object : markList) {
-			if (object.getmBitmap() != null) {
-				object.getmBitmap().recycle();
-			}
+
+	public void onDestory() {
+		
+		if (mDrawThread != null && mDrawThread.looper != null) {
+			mDrawThread.looper.quit();
 		}
 	}
 
@@ -273,7 +280,6 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 			}
 		}
 		draw();
-
 	}
 
 	// 处理点击标记的事件
@@ -283,18 +289,11 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 		int clickY = (int) event.getY();
 
 		for (MarkObject object : markList) {
-			Bitmap location = object.getmBitmap();
-			int objX = (int) (mapCenter.x - location.getWidth() / 2
-					- mBitmap.getWidth() * mCurrentScale / 2 + mBitmap
-					.getWidth() * object.getMapX() * mCurrentScale);
-			int objY = (int) (mapCenter.y - location.getHeight()
-					- mBitmap.getHeight() * mCurrentScale / 2 + mBitmap
-					.getHeight() * object.getMapY() * mCurrentScale);
+			int objX = (int) convertToScreenX(object.getMapX(), 2*radius);
+			int objY = (int) convertToScreenY(object.getMapY(), 2*radius);
 			// 判断当前object是否包含触摸点，在这里为了得到更好的点击效果，我将标记的区域放大了
-			if (objX - location.getWidth() < clickX
-					&& objX + location.getWidth() > clickX
-					&& objY + location.getHeight() > clickY
-					&& objY - location.getHeight() < clickY) {
+			if (objX - radius * 2 < clickX && objX + radius * 2 > clickX
+					&& objY + radius * 2 > clickY && objY - radius * 2 < clickY) {
 				if (object.getMarkListener() != null) {
 					object.getMarkListener()
 							.onMarkClick(object, clickX, clickY);
@@ -314,38 +313,7 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	private void draw() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				Canvas canvas = getHolder().lockCanvas();
-				if (canvas != null && mBitmap != null) {
-					canvas.drawColor(Color.GRAY);
-					Matrix matrix = new Matrix();
-					matrix.setScale(mCurrentScale, mCurrentScale,
-							mBitmap.getWidth() / 2, mBitmap.getHeight() / 2);
-					matrix.postTranslate(mapCenter.x - mBitmap.getWidth() / 2,
-							mapCenter.y - mBitmap.getHeight() / 2);
-					canvas.drawBitmap(mBitmap, matrix, mPaint);
-					if (isShowMark) {
-						for (MarkObject object : markList) {
-							Bitmap location = object.getmBitmap();
-							matrix.setScale(1.0f, 1.0f);
-							// 使用Matrix使得Bitmap的宽和高发生变化，在这里使用的mapX和mapY都是相对值
-							matrix.postTranslate(
-									convertToScreenX(object.getMapX(),
-											location.getWidth()),
-									convertToScreenY(object.getMapY(),
-											location.getHeight()));
-							canvas.drawBitmap(location, matrix, mPaint);
-						}
-					}
-				}
-				if (canvas != null) {
-					getHolder().unlockCanvasAndPost(canvas);
-				}
-			}
-		}).start();
+		mDrawThread.mHandler.sendEmptyMessage(0);
 	}
 
 	@Override
@@ -362,7 +330,6 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 					mStatus = Status.DRAG;
 				}
 			}
-
 			lastClickTime = event.getEventTime();
 			break;
 
@@ -415,6 +382,61 @@ public class MyMap extends SurfaceView implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
+	}
+
+	public class DrawThread extends Thread {
+
+		public Handler mHandler;
+		private Looper looper;
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			Looper.prepare();
+			looper = Looper.myLooper();
+			synchronized (this) {
+				mHandler = new Handler() {// 当接收到绘图消息时，重新进行绘图
+
+					@Override
+					public void handleMessage(Message msg) {
+						// TODO Auto-generated method stub
+						super.handleMessage(msg);
+						Canvas canvas = getHolder().lockCanvas();
+						if (canvas != null && mBitmap != null) {
+							canvas.drawColor(Color.GRAY);
+							Matrix matrix = new Matrix();
+							matrix.setScale(mCurrentScale, mCurrentScale,
+									mBitmap.getWidth() / 2,
+									mBitmap.getHeight() / 2);
+							matrix.postTranslate(
+									mapCenter.x - mBitmap.getWidth() / 2,
+									mapCenter.y - mBitmap.getHeight() / 2);
+							canvas.drawBitmap(mBitmap, matrix, mPaint);
+							if (isShowMark) {
+								for (MarkObject object : markList) {
+									Log.w(TAG, "draw_mark");
+									float cx = mapCenter.x - mBitmap.getWidth()
+											* mCurrentScale / 2
+											+ mBitmap.getWidth()
+											* object.getMapX() * mCurrentScale;
+									float cy = mapCenter.y
+											- mBitmap.getHeight()
+											* mCurrentScale / 2
+											+ mBitmap.getHeight()
+											* object.getMapY() * mCurrentScale;
+									canvas.drawCircle(cx, cy, radius, mPaint);
+								}
+							}
+						}
+						if (canvas != null) {
+							getHolder().unlockCanvasAndPost(canvas);
+						}
+					}
+
+				};
+			}
+			Looper.loop();
+		}
 	}
 
 	public boolean isShowMark() {

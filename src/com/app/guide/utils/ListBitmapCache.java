@@ -17,23 +17,13 @@ public class ListBitmapCache implements ImageCache {
 			.getExternalStorageDirectory().getAbsolutePath();
 
 	public ListBitmapCache() {
-		int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024); 
+		int maxMemory = (int) (Runtime.getRuntime().maxMemory() ); 
 	    // 使用最大可用内存值的1/8作为缓存的大小
 	    int maxSize = maxMemory / 8;  
 		mCache = new LruCache<String, Bitmap>(maxSize) {
 			@Override
 			protected int sizeOf(String key, Bitmap bitmap) {
 				return bitmap.getRowBytes() * bitmap.getHeight();
-			}
-
-			@Override
-			protected void entryRemoved(boolean evicted, String key,
-					Bitmap oldValue, Bitmap newValue) {
-				// TODO Auto-generated method stub
-				super.entryRemoved(evicted, key, oldValue, newValue);
-				if (evicted) {
-					oldValue.recycle();
-				}
 			}
 		};
 	}

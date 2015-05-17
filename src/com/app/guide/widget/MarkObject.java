@@ -1,10 +1,8 @@
 package com.app.guide.widget;
 
-import android.graphics.Bitmap;
 
 public class MarkObject {
 
-	private Bitmap mBitmap;
 	private float mapX;
 	private float mapY;
 	private MarkClickListener listener;
@@ -13,26 +11,10 @@ public class MarkObject {
 
 	}
 
-	public MarkObject(Bitmap mBitmap, float mapX, float mapY) {
+	public MarkObject(float mapX, float mapY) {
 		super();
-		this.mBitmap = mBitmap;
 		this.mapX = mapX;
 		this.mapY = mapY;
-	}
-
-	/**
-	 * @return the mBitmap
-	 */
-	public Bitmap getmBitmap() {
-		return mBitmap;
-	}
-
-	/**
-	 * @param mBitmap
-	 *            the mBitmap to set
-	 */
-	public void setmBitmap(Bitmap mBitmap) {
-		this.mBitmap = mBitmap;
 	}
 
 	/**

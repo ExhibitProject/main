@@ -4,8 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 
+import com.app.guide.service.AppService;
 import com.app.guide.sql.DatabaseContext;
-import com.app.guide.sql.SdCardDBHelper;
+import com.app.guide.sql.OfflineBeanSqlHelper;
 import com.app.guide.ui.BaseActivity;
 import com.app.guide.ui.CityActivity;
 
@@ -22,8 +23,7 @@ public class MainActivity extends BaseActivity {
 		Intent intent1 = new Intent(MainActivity.this, CityActivity.class);
 		startActivity(intent1);
 
-		DatabaseContext context = new DatabaseContext(this, PATH);
-		SdCardDBHelper helper = new SdCardDBHelper(context, "my.db");
-		helper.getWritableDatabase();
+		Intent serviceIntent = new Intent(MainActivity.this, AppService.class);
+		startService(serviceIntent);
 	}
 }

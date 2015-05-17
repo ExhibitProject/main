@@ -1,6 +1,8 @@
 package com.app.guide.ui;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.londatiga.android.QuickAction;
 
@@ -29,6 +31,7 @@ import android.widget.ToggleButton;
 import com.app.guide.R;
 import com.app.guide.adapter.MapExhibitAdapter;
 import com.app.guide.bean.MapExhibitBean;
+import com.app.guide.utils.GetBeanFromSql;
 import com.app.guide.widget.MarkObject;
 import com.app.guide.widget.MarkObject.MarkClickListener;
 import com.app.guide.widget.MyMap;
@@ -42,6 +45,7 @@ public class MapFragment extends Fragment {
 	private ToggleButton mToggleButton;
 	private Button loactionButton;
 	private MapExhibitAdapter adapter;
+	private List<MapExhibitBean> mapExhibitBeans;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,31 +64,16 @@ public class MapFragment extends Fragment {
 		mToggleButton = (ToggleButton) view.findViewById(R.id.map_tog_list);
 		loactionButton = (Button) view.findViewById(R.id.map_btn_location);
 		locaImageView = (ImageView) view.findViewById(R.id.map_location);
-		MarkObject markObject = new MarkObject();
-		markObject.setMapX(0.04f);
-		markObject.setMapY(0.5f);
-		markObject.setmBitmap(BitmapFactory.decodeResource(getResources(),
-				R.drawable.icon_marka));
-		markObject.setMarkListener(new MarkClickListener() {
-
-			@Override
-			public void onMarkClick(MarkObject object, int x, int y) {
-				// TODO Auto-generated method stub
-			}
-		});
-		sceneMap.addMark(markObject);
-		sceneMap.setShowMark(true);
+		
+		sceneMap.setShowMark(false);
 		sceneMap.setLoactionPosition(0.5f, 0.5f);
-		ArrayList<MapExhibitBean> list = new ArrayList<MapExhibitBean>();
-		for (int i = 0; i < 100; i++) {
-			MapExhibitBean bean = new MapExhibitBean();
-			bean.setAddress("A厅B展333");
-			bean.setName("青花人物笔海");
-			bean.setMapX(0.04f);
-			bean.setMapY(0.5f);
-			list.add(bean);
+		try {
+			mapExhibitBeans = GetBeanFromSql.getMapExhibit(getActivity());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		adapter = new MapExhibitAdapter(getActivity(), list);
+		adapter = new MapExhibitAdapter(getActivity(), mapExhibitBeans);
 		mListView.setAdapter(adapter);
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -125,6 +114,7 @@ public class MapFragment extends Fragment {
 				Log.w("Map", "click");
 			}
 		});
+		
 	}
 
 	@Override
@@ -140,11 +130,18 @@ public class MapFragment extends Fragment {
 		super.onResume();
 		bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
 		sceneMap.setBitmap(bitmap);
+		for (MapExhibitBean bean : mapExhibitBeans) {
+			MarkObject object = new MarkObject();
+			object.setMapX(bean.getMapX());
+			object.setMapY(bean.getMapY());
+			sceneMap.addMark(object);
+		}
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
+		super.onDestroy();
 		sceneMap.onDestory();
 	}
 
